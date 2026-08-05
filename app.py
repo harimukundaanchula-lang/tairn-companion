@@ -72,7 +72,7 @@ st.markdown("""
         box-shadow: none !important;
     }
     
-    /* Hide waveform canvas and secondary buttons (delete, play, download) */
+    /* Hide waveform canvas and secondary buttons */
     div[data-testid="stAudioInput"] canvas,
     div[data-testid="stAudioInput"] button:not(:first-child) {
         display: none !important;
@@ -116,7 +116,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Tairn Morningstartail Header SVG (Black Dragon, Gold Wings/Eyes)
+# Header SVG
 st.markdown("""
     <div class="tairn-header">
         <svg width="65" height="65" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,6 +180,9 @@ def play_invisible_audio(audio_bytes):
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
+if "last_processed_audio" not in st.session_state:
+    st.session_state.last_processed_audio = None
+
 # Chat Container
 chat_container = st.container()
 
@@ -191,14 +194,20 @@ with chat_container:
                 st.write(msg["content"])
 
 # Single Floating Dragon Orb Button
-audio_file = st.audio_input("Record voice", label_visibility="collapsed")
+audio_file = st.audio_input("Record voice", label_visibility="collapsed", key="dragon_mic")
 
 # Text Input Box
 user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
 
 user_text = None
 
-if audio_file:
+# PRIORITIZE TEXT INPUT FIRST
+if user_text_input:
+    user_text = user_text_input
+
+# PROCESS VOICE INPUT ONLY IF IT'S NEW AUDIO
+elif audio_file and audio_file != st.session_state.last_processed_audio:
+    st.session_state.last_processed_audio = audio_file
     with st.spinner("Tairn hears your mind..."):
         audio_file.name = "input.wav"
         transcript = client.audio.transcriptions.create(
@@ -206,9 +215,6 @@ if audio_file:
             file=audio_file
         )
         user_text = transcript.text
-
-elif user_text_input:
-    user_text = user_text_input
 
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
@@ -230,4 +236,5 @@ if user_text:
                     play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
+    st.rerun()
     
