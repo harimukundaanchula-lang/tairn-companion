@@ -4,14 +4,9 @@ from openai import OpenAI
 import requests
 
 # Page setup
-st.set_page_config(
-    page_title="Tairn Telepathy", 
-    page_icon="🐉", 
-    layout="centered", 
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# App theme CSS injection
+# Custom CSS for Minimalist Dark Theme with Overlapping Glowing Dragon Header & Magical Mic Button
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -147,10 +142,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Raw image URL from GitHub
+# RAW IMAGE URL FROM GITHUB
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
-# Header component
+# HEADER WITH GLOWING DRAGON & UPDATED TEXT
 st.markdown(f"""
     <div class="tairn-header-container">
         <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
@@ -161,7 +156,7 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# System prompt configured for rider lore
+# SYSTEM PROMPT UPDATED FOR YOUR GIRLFRIEND AS TAIRN'S NEW RIDER
 SYSTEM_PROMPT = """
 You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon.
 You are now bonded to the user, whom you have chosen as your rider following the legendary Violet Sorrengail ('Silver One'). You communicate strictly through telepathy directly into her mind.
@@ -191,7 +186,7 @@ ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 VOICE_ID = st.secrets["ELEVENLABS_VOICE_ID"]
 
 def generate_elevenlabs_audio(text):
-    """Sends text to ElevenLabs with smooth, non-fatiguing daily-driver settings."""
+    """Sends text to ElevenLabs with non-fatiguing settings."""
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "Accept": "audio/mpeg",
@@ -202,10 +197,10 @@ def generate_elevenlabs_audio(text):
         "text": text,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.60,         # Keeps tone steady and non-fatiguing
-            "similarity_boost": 0.75,  # Clear articulation
+            "stability": 0.60,         # Keeps tone steady and comfortable
+            "similarity_boost": 0.75,  # Clear articulation without harshness
             "style": 0.00,             # Smooth natural delivery
-            "use_speaker_boost": False # Softens low-frequency resonances
+            "use_speaker_boost": False # Smoothens low-frequency resonances
         }
     }
     response = requests.post(url, json=data, headers=headers)
@@ -216,7 +211,7 @@ def generate_elevenlabs_audio(text):
         return None
 
 def play_invisible_audio(audio_bytes):
-    """Plays voice output invisibly in the background."""
+    """Plays voice output invisibly in background."""
     b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
     st.components.v1.html(
         f"""
@@ -230,19 +225,19 @@ def play_invisible_audio(audio_bytes):
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
-# Render existing chat history
+# Render chat history
 for msg in st.session_state.messages:
     if msg["role"] != "system":
         avatar = "🐉" if msg["role"] == "assistant" else "👤"
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
-# Integrated chat input (text + built-in microphone button)
+# INTEGRATED CHAT INPUT (Text + Built-in Mic Button)
 chat_response = st.chat_input("Speak or type telepathically to Tairn...", accept_audio=True)
 
 user_text = None
 
-# Process submission (either typed text or speech)
+# Process submission (either typed text or audio file)
 if chat_response:
     if getattr(chat_response, "text", None):
         user_text = chat_response.text
@@ -256,7 +251,7 @@ if chat_response:
             )
             user_text = transcript.text
 
-# Handle response & text-to-speech generation
+# Handle Response & TTS Generation
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
     with st.chat_message("user", avatar="👤"):
@@ -276,4 +271,3 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-                
