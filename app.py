@@ -171,11 +171,19 @@ def play_invisible_audio(audio_bytes):
     """Plays voice output invisibly in background."""
     b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
     audio_html = f"""
+    <iframe src="about:blank" style="display:none;" id="audio_frame"></iframe>
     <audio autoplay style="display:none;">
         <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
     </audio>
     """
-    st.markdown(audio_html, unsafe_allow_html=True)
+    st.components.v1.html(
+        f"""
+        <audio autoplay style="display:none;">
+            <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+        </audio>
+        """,
+        height=0,
+    )
 
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -183,15 +191,12 @@ if "messages" not in st.session_state:
 if "last_processed_audio" not in st.session_state:
     st.session_state.last_processed_audio = None
 
-# Chat Container
-chat_container = st.container()
-
-with chat_container:
-    for msg in st.session_state.messages:
-        if msg["role"] != "system":
-            avatar = "🐉" if msg["role"] == "assistant" else "👤"
-            with st.chat_message(msg["role"], avatar=avatar):
-                st.write(msg["content"])
+# Render existing chat history
+for msg in st.session_state.messages:
+    if msg["role"] != "system":
+        avatar = "🐉" if msg["role"] == "assistant" else "👤"
+        with st.chat_message(msg["role"], avatar=avatar):
+            st.write(msg["content"])
 
 # Single Floating Dragon Orb Button
 audio_file = st.audio_input("Record voice", label_visibility="collapsed", key="dragon_mic")
@@ -216,25 +221,24 @@ elif audio_file and audio_file != st.session_state.last_processed_audio:
         )
         user_text = transcript.text
 
+# Process and respond
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
-    with chat_container:
-        with st.chat_message("user", avatar="👤"):
-            st.write(user_text)
+    with st.chat_message("user", avatar="👤"):
+        st.write(user_text)
 
-        with st.chat_message("assistant", avatar="🐉"):
-            with st.spinner("Tairn speaks..."):
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=st.session_state.messages
-                )
-                tairn_reply = response.choices[0].message.content
-                st.write(tairn_reply)
-                
-                audio_bytes = generate_elevenlabs_audio(tairn_reply)
-                if audio_bytes:
-                    play_invisible_audio(audio_bytes)
+    with st.chat_message("assistant", avatar="🐉"):
+        with st.spinner("Tairn speaks..."):
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=st.session_state.messages
+            )
+            tairn_reply = response.choices[0].message.content
+            st.write(tairn_reply)
+            
+            audio_bytes = generate_elevenlabs_audio(tairn_reply)
+            if audio_bytes:
+                play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-    st.rerun()
     
