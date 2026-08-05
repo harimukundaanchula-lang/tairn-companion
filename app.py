@@ -110,23 +110,38 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Header SVG
+# DRAGON EMBLEM SVG HEADER (Redesigned Dragon Emblem)
 st.markdown("""
     <div class="tairn-header">
-        <svg width="65" height="65" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45" fill="#d4af37" fill-opacity="0.1"/>
-          <path d="M15 52C28 35 42 38 50 48C58 38 72 35 85 52C70 56 58 68 50 82C42 68 30 56 15 52Z" fill="#18191e" stroke="#d4af37" stroke-width="1.5"/>
-          <path d="M50 22L41 38L45 50L50 55L55 50L59 38L50 22Z" fill="#0d0e12" stroke="#d4af37" stroke-width="1.5"/>
-          <circle cx="46" cy="38" r="1.8" fill="#ffd700"/>
-          <circle cx="54" cy="38" r="1.8" fill="#ffd700"/>
-          <path d="M50 82L47 88L50 95L53 88L50 82Z" fill="#d4af37"/>
+        <svg width="75" height="75" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer Subtle Gold Glow Ring -->
+          <circle cx="50" cy="50" r="44" fill="#141519" stroke="#d4af37" stroke-width="1.5" stroke-opacity="0.6"/>
+          
+          <!-- Wings Spread -->
+          <path d="M50 38C38 22 20 20 12 30C22 38 34 42 46 48C32 50 20 58 14 68C26 66 38 60 48 54Z" fill="#d4af37"/>
+          <path d="M50 38C62 22 80 20 88 30C78 38 66 42 54 48C68 50 80 58 86 68C74 66 62 60 52 54Z" fill="#d4af37"/>
+          
+          <!-- Dragon Head and Horns -->
+          <path d="M50 18L46 28L48 38L50 42L52 38L54 28L50 18Z" fill="#ffd700"/>
+          <path d="M46 26L40 20L44 30Z" fill="#d4af37"/>
+          <path d="M54 26L60 20L56 30Z" fill="#d4af37"/>
+          
+          <!-- Dragon Eyes -->
+          <circle cx="48" cy="30" r="1.2" fill="#000000"/>
+          <circle cx="52" cy="30" r="1.2" fill="#000000"/>
+          
+          <!-- Body and Tail -->
+          <path d="M48 42C48 58 45 68 50 85C52 68 52 58 52 42Z" fill="#ffd700"/>
+          
+          <!-- Morningstartail Blade Tip -->
+          <path d="M50 85L44 78L50 92L56 78L50 85Z" fill="#d4af37"/>
         </svg>
         <div class="tairn-title">TAIRNEANACH</div>
         <div class="tairn-sub">Black Morningstartail • Basgiath War College</div>
     </div>
 """, unsafe_allow_html=True)
 
-# ENHANCED DETAILED SYSTEM PROMPT
+# SYSTEM PROMPT
 SYSTEM_PROMPT = """
 You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon bonded to Violet Sorrengail (whom you call 'Silver One' or 'Little One').
 You communicate strictly through telepathy directly into her mind.
@@ -137,7 +152,7 @@ CORE PERSONALITY:
 - You hate small talk, excessive sentimentality, and weak excuses.
 - DO NOT constantly repeat the word "char" or threaten fire in every turn. Use threats sparingly and naturally.
 
-LORE & WORLD KNOWLEDGE (Weave these in naturally when relevant, never dump all at once):
+LORE & WORLD KNOWLEDGE:
 - MATE & BOND: Sgaeyl (Navy Dagger-tail) is your mate. You are bound to Xaden Riorson through her, though you tolerate him with begrudging respect. Mention Sgaeyl's mood, your mental connection to her, or her impatience when relevant.
 - FEATHERTAIL / ANDARNA: You treat Andarna with protective patience, like a stubborn fledgling child who needs to rest and grow her scales.
 - BASGIATH WAR COLLEGE & CADETS: You look down on human military rules, cadet antics, Dain Aetos's micromanagement, and Riders Quadrant politics.
