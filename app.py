@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Sleek Minimalist UI & Floating Dragon Orb
+# Custom CSS for Minimalist Dark Theme with Simple Clean Record Button
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -15,7 +15,7 @@ st.markdown("""
         color: #e0e0e0;
     }
     
-    /* Hide Streamlit Chrome */
+    /* Hide Streamlit Chrome Header & Footer */
     header, footer, #MainMenu { visibility: hidden !important; }
     
     /* Header Styling */
@@ -54,7 +54,7 @@ st.markdown("""
         opacity: 0 !important;
     }
 
-    /* Clean up the audio input component wrapper completely */
+    /* CLEAN SIMPLE AUDIO INPUT BUTTON WRAPPER */
     div[data-testid="stAudioInput"] {
         background: transparent !important;
         border: none !important;
@@ -62,10 +62,12 @@ st.markdown("""
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: 20px 0 !important;
+        margin-top: 10px !important;
+        margin-bottom: 5px !important;
+        padding: 0 !important;
     }
 
-    /* Hide the waveform container, timer text, and extra elements */
+    /* Hide background box and extra container elements */
     div[data-testid="stAudioInput"] > div {
         background: transparent !important;
         border: none !important;
@@ -78,40 +80,37 @@ st.markdown("""
         display: none !important;
     }
 
-    /* Target the primary recording button into a glowing golden orb */
+    /* Simple Standard Record Button Styling (Matches chat input palette) */
     div[data-testid="stAudioInput"] button:first-child {
-        background: radial-gradient(circle, #ffd700 0%, #b89628 70%, #6e5812 100%) !important;
-        border: 2px solid #ffd700 !important;
+        background-color: #1c1d22 !important;
+        border: 1px solid #33353d !important;
         border-radius: 50% !important;
-        width: 75px !important;
-        height: 75px !important;
-        box-shadow: 0 0 25px rgba(212, 175, 55, 0.6) !important;
-        transition: all 0.25s ease-in-out !important;
-        position: relative !important;
+        width: 52px !important;
+        height: 52px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        transition: all 0.2s ease-in-out !important;
         cursor: pointer !important;
     }
 
-    /* Replace default mic icon with Dragon Emoji in center of orb */
-    div[data-testid="stAudioInput"] button:first-child * {
-        font-size: 0px !important;
-    }
-    div[data-testid="stAudioInput"] button:first-child::after {
-        content: "🐉";
-        font-size: 36px !important;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        line-height: 1;
+    /* Hover effect */
+    div[data-testid="stAudioInput"] button:first-child:hover {
+        border-color: #d4af37 !important;
+        background-color: #25272e !important;
     }
 
-    /* FIERY RED ORB STATE: Active / Recording / Listening */
+    /* RED RECORDING STATE (When active / pressed / listening) */
     div[data-testid="stAudioInput"] button:first-child:active,
     div[data-testid="stAudioInput"] button:first-child[aria-pressed="true"] {
-        background: radial-gradient(circle, #ff4d4d 0%, #c0392b 70%, #781e1e 100%) !important;
-        border-color: #ff3333 !important;
-        box-shadow: 0 0 40px rgba(255, 51, 51, 0.95) !important;
-        transform: scale(0.94);
+        background-color: #d32f2f !important;
+        border-color: #ff5252 !important;
+        box-shadow: 0 0 15px rgba(211, 47, 47, 0.8) !important;
+    }
+
+    /* Ensure SVG mic icon inside stays crisp and light */
+    div[data-testid="stAudioInput"] button:first-child svg {
+        fill: #e0e0e0 !important;
+        width: 22px !important;
+        height: 22px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -170,12 +169,6 @@ def generate_elevenlabs_audio(text):
 def play_invisible_audio(audio_bytes):
     """Plays voice output invisibly in background."""
     b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
-    audio_html = f"""
-    <iframe src="about:blank" style="display:none;" id="audio_frame"></iframe>
-    <audio autoplay style="display:none;">
-        <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
-    </audio>
-    """
     st.components.v1.html(
         f"""
         <audio autoplay style="display:none;">
@@ -191,26 +184,26 @@ if "messages" not in st.session_state:
 if "last_processed_audio" not in st.session_state:
     st.session_state.last_processed_audio = None
 
-# Render existing chat history
+# Render chat history
 for msg in st.session_state.messages:
     if msg["role"] != "system":
         avatar = "🐉" if msg["role"] == "assistant" else "👤"
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
-# Single Floating Dragon Orb Button
-audio_file = st.audio_input("Record voice", label_visibility="collapsed", key="dragon_mic")
+# Standard Simple Record Button placed right above text input
+audio_file = st.audio_input("Record voice", label_visibility="collapsed", key="simple_mic")
 
 # Text Input Box
 user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
 
 user_text = None
 
-# PRIORITIZE TEXT INPUT FIRST
+# PRIORITIZE TEXT INPUT
 if user_text_input:
     user_text = user_text_input
 
-# PROCESS VOICE INPUT ONLY IF IT'S NEW AUDIO
+# PROCESS VOICE INPUT ONLY IF NEW
 elif audio_file and audio_file != st.session_state.last_processed_audio:
     st.session_state.last_processed_audio = audio_file
     with st.spinner("Tairn hears your mind..."):
@@ -221,7 +214,7 @@ elif audio_file and audio_file != st.session_state.last_processed_audio:
         )
         user_text = transcript.text
 
-# Process and respond
+# Handle Response & TTS Generation
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
     with st.chat_message("user", avatar="👤"):
