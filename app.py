@@ -6,16 +6,16 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Minimalist Dark Theme & Glowing Red Dragon Mic
+# Custom CSS for Sleek Minimalist UI & Floating Dragon Orb
 st.markdown("""
     <style>
-    /* Dark Dragon Theme */
+    /* Dark Dragon Theme Base */
     .stApp {
         background-color: #0b0c10;
         color: #e0e0e0;
     }
     
-    /* Hide top Streamlit header/footer elements */
+    /* Hide Streamlit Chrome */
     header, footer, #MainMenu { visibility: hidden !important; }
     
     /* Header Styling */
@@ -47,62 +47,71 @@ st.markdown("""
         border: 1px solid #22232a;
     }
 
-    /* HIDE THE MEDIA PLAYER BAR ENTIRELY */
+    /* Completely hide default audio playback bars */
     div[data-testid="stAudio"], audio {
         display: none !important;
         height: 0px !important;
         opacity: 0 !important;
     }
 
-    /* CLEAN AUDIO INPUT WRAPPER */
+    /* Clean up the audio input component wrapper completely */
     div[data-testid="stAudioInput"] {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 15px 0;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 20px 0 !important;
     }
 
-    /* Hide standard waveform box and internal secondary controls */
+    /* Hide the waveform container, timer text, and extra elements */
     div[data-testid="stAudioInput"] > div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
-
-    /* Target ONLY the main circular button */
-    div[data-testid="stAudioInput"] button {
-        background: linear-gradient(135deg, #d4af37, #8a7322) !important;
-        color: transparent !important;
-        border: 2px solid #ffd700 !important;
-        border-radius: 50% !important;
-        width: 72px !important;
-        height: 72px !important;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
-        transition: all 0.2s ease-in-out !important;
-        position: relative;
-        cursor: pointer;
+    
+    /* Hide waveform canvas and secondary buttons (delete, play, download) */
+    div[data-testid="stAudioInput"] canvas,
+    div[data-testid="stAudioInput"] button:not(:first-child) {
+        display: none !important;
     }
 
-    /* Display Dragon Emoji inside main button */
-    div[data-testid="stAudioInput"] button::after {
+    /* Target the primary recording button into a glowing golden orb */
+    div[data-testid="stAudioInput"] button:first-child {
+        background: radial-gradient(circle, #ffd700 0%, #b89628 70%, #6e5812 100%) !important;
+        border: 2px solid #ffd700 !important;
+        border-radius: 50% !important;
+        width: 75px !important;
+        height: 75px !important;
+        box-shadow: 0 0 25px rgba(212, 175, 55, 0.6) !important;
+        transition: all 0.25s ease-in-out !important;
+        position: relative !important;
+        cursor: pointer !important;
+    }
+
+    /* Replace default mic icon with Dragon Emoji in center of orb */
+    div[data-testid="stAudioInput"] button:first-child * {
+        font-size: 0px !important;
+    }
+    div[data-testid="stAudioInput"] button:first-child::after {
         content: "🐉";
-        font-size: 34px !important;
+        font-size: 36px !important;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        line-height: 1;
     }
 
-    /* WHEN PRESSED / ACTIVE: Turn Button Fiery Red (Listening) */
-    div[data-testid="stAudioInput"] button:active,
-    div[data-testid="stAudioInput"] button[aria-pressed="true"] {
-        background: linear-gradient(135deg, #e63946, #900c3f) !important;
-        border-color: #ff4d4d !important;
-        box-shadow: 0 0 35px rgba(230, 57, 70, 0.9) !important;
-        transform: scale(0.95);
+    /* FIERY RED ORB STATE: Active / Recording / Listening */
+    div[data-testid="stAudioInput"] button:first-child:active,
+    div[data-testid="stAudioInput"] button:first-child[aria-pressed="true"] {
+        background: radial-gradient(circle, #ff4d4d 0%, #c0392b 70%, #781e1e 100%) !important;
+        border-color: #ff3333 !important;
+        box-shadow: 0 0 40px rgba(255, 51, 51, 0.95) !important;
+        transform: scale(0.94);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -181,7 +190,7 @@ with chat_container:
             with st.chat_message(msg["role"], avatar=avatar):
                 st.write(msg["content"])
 
-# Single Clean Dragon Voice Orb
+# Single Floating Dragon Orb Button
 audio_file = st.audio_input("Record voice", label_visibility="collapsed")
 
 # Text Input Box
