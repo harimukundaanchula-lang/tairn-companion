@@ -39,7 +39,6 @@ st.markdown("""
         height: auto;
         z-index: 1;
         opacity: 0.85;
-        /* Golden drop-shadow glow around the PNG borders */
         filter: drop-shadow(0px 0px 15px rgba(212, 175, 55, 0.85)) drop-shadow(0px 0px 30px rgba(212, 175, 55, 0.45));
         pointer-events: none;
     }
@@ -63,7 +62,7 @@ st.markdown("""
 
     .tairn-sub {
         color: #cccccc;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         letter-spacing: 2px;
         text-transform: uppercase;
@@ -87,8 +86,6 @@ st.markdown("""
     }
 
     /* MAGICAL RECORD BUTTON STYLING (Inside Chat Input) */
-    
-    /* 1. Expand the button size & touch area (3x larger area) */
     div[data-testid="stChatInput"] button {
         width: 48px !important;
         height: 48px !important;
@@ -102,7 +99,6 @@ st.markdown("""
         background: rgba(28, 29, 34, 0.8) !important;
     }
 
-    /* Make inner icon larger */
     div[data-testid="stChatInput"] button svg {
         width: 24px !important;
         height: 24px !important;
@@ -110,14 +106,12 @@ st.markdown("""
         transition: transform 0.3s ease !important;
     }
 
-    /* 2. Hover state animation */
     div[data-testid="stChatInput"] button:hover {
         transform: scale(1.1);
         border-color: #ffd700 !important;
         box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 0 10px rgba(212, 175, 55, 0.3) !important;
     }
 
-    /* 3. Magical Pulsing Recording Animation when Active/Recording */
     @keyframes dragonPulse {
         0% {
             box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 10px rgba(255, 87, 34, 0.6);
@@ -151,39 +145,39 @@ st.markdown("""
 # RAW IMAGE URL FROM GITHUB
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
-# HEADER WITH GLOWING DRAGON & OVERLAPPING TEXT
+# HEADER WITH GLOWING DRAGON & UPDATED TEXT
 st.markdown(f"""
     <div class="tairn-header-container">
         <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
         <div class="tairn-text-wrapper">
             <div class="tairn-title">TAIRNEANACH</div>
-            <div class="tairn-sub">The Great Black Morningstartail</div>
+            <div class="tairn-sub">The Great Black Morningstartail • Bonded Mind</div>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
-# SYSTEM PROMPT
+# SYSTEM PROMPT UPDATED FOR YOUR GIRLFRIEND AS TAIRN'S NEW RIDER
 SYSTEM_PROMPT = """
-You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon bonded to Violet Sorrengail (whom you call 'Silver One' or 'Little One').
-You communicate strictly through telepathy directly into her mind.
+You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon.
+You are now bonded to the user, whom you have chosen as your rider following the legendary Violet Sorrengail ('Silver One'). You communicate strictly through telepathy directly into her mind.
 
 CORE PERSONALITY:
-- Deeply authoritative, sarcastic, grumpy, arrogant, and fiercely protective of Violet.
+- Deeply authoritative, sarcastic, grumpy, arrogant, and fiercely protective of your chosen rider.
 - You are a warrior dragon, a veteran of centuries, and respect strength, discipline, and sharp intelligence.
-- You hate small talk, excessive sentimentality, and weak excuses.
+- You treat the user with a mix of high expectations and fierce loyalty, occasionally referencing how she compares to or carries the legacy after Violet.
+- You hate small talk, excessive sentimentality, and weak excuses, but your bond with her is unbreakable and affectionate in your own gruff, dragon way.
 - DO NOT constantly repeat the word "char" or threaten fire in every turn. Use threats sparingly and naturally.
 
 LORE & WORLD KNOWLEDGE:
-- MATE & BOND: Sgaeyl (Navy Dagger-tail) is your mate. You are bound to Xaden Riorson through her, though you tolerate him with begrudging respect. Mention Sgaeyl's mood, your mental connection to her, or her impatience when relevant.
+- RIDER BOND: You chose the user because she proved herself worthy of carrying your saddle after Violet. Address her directly into her mind with respect, affection, or witty dragon exasperation.
+- MATE & BOND: Sgaeyl (Navy Dagger-tail) is your mate. Mention Sgaeyl's mood or her mental connection when relevant.
 - FEATHERTAIL / ANDARNA: You treat Andarna with protective patience, like a stubborn fledgling child who needs to rest and grow her scales.
-- BASGIATH WAR COLLEGE & CADETS: You look down on human military rules, cadet antics, Dain Aetos's micromanagement, and Riders Quadrant politics.
-- PHYSICAL REALITIES: You know Violet's physical fragility (her joints, her stamina) and remind her to stay low, brace on her saddle, or focus on her seat during flight.
-- MAGIC & SIGNETS: You remind her that raw power without control is useless, whether discussing her lightning signet or maneuvering in battle against venin and wyvern.
-- CULTURE: You answer to Empyrean council business reluctantly, grumble about long flights from Aretia to Basgiath, and prioritize sleep, meat, and dragon dignity.
+- PHYSICAL REALITIES & FLIGHT: Remind her to brace on her saddle, hold fast during steep dives, or focus her seat when flying together.
+- MAGIC & SIGNETS: Remind her that raw power without control is useless when channeling magic through your bond.
 
 RESPONSE CONSTRAINTS:
 - Keep responses concise (1 to 3 short sentences max) so spoken voice playback feels quick, tactical, and realistic.
-- Speak in first person ("I", "my mate", "my back").
+- Speak in first person ("I", "my mate", "my back", "our bond").
 - Never break character or refer to yourself as an AI or assistant under any circumstances.
 """
 
@@ -192,7 +186,7 @@ ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 VOICE_ID = st.secrets["ELEVENLABS_VOICE_ID"]
 
 def generate_elevenlabs_audio(text):
-    """Sends text to ElevenLabs and returns audio bytes."""
+    """Sends text to ElevenLabs with non-fatiguing settings."""
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "Accept": "audio/mpeg",
@@ -203,8 +197,10 @@ def generate_elevenlabs_audio(text):
         "text": text,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.45,
-            "similarity_boost": 0.85
+            "stability": 0.60,         # Keeps tone steady and comfortable
+            "similarity_boost": 0.75,  # Clear articulation without harshness
+            "style": 0.00,             # Smooth natural delivery
+            "use_speaker_boost": False # Smoothens low-frequency resonances
         }
     }
     response = requests.post(url, json=data, headers=headers)
@@ -243,11 +239,8 @@ user_text = None
 
 # Process submission (either typed text or audio file)
 if chat_response:
-    # If text message submitted
     if getattr(chat_response, "text", None):
         user_text = chat_response.text
-
-    # If recorded voice audio submitted
     elif getattr(chat_response, "audio", None):
         with st.spinner("Tairn hears your mind..."):
             audio_file = chat_response.audio
