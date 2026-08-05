@@ -11,12 +11,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# App icon and theme CSS injection
+# App theme CSS injection
 st.markdown("""
-    <head>
-        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/main/icon.svg">
-        <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/main/icon.svg">
-    </head>
     <style>
     /* Dark Dragon Theme Base */
     .stApp {
@@ -280,3 +276,4 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
+                
