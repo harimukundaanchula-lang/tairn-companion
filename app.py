@@ -4,9 +4,14 @@ from openai import OpenAI
 import requests
 
 # Page setup
-st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="Tairn Telepathy", 
+    page_icon="🐉", 
+    layout="centered", 
+    initial_sidebar_state="collapsed"
+)
 
-# Custom CSS for Minimalist Dark Theme with Overlapping Glowing Dragon Header & Magical Mic Button
+# App theme CSS injection
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -28,7 +33,7 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         overflow: visible;
-        min-height: 280px;
+        min-height: 310px; /* Increased slightly for 3rd text line */
     }
 
     /* Doubled Dragon Image (360px) with Golden Border Glow */
@@ -67,6 +72,15 @@ st.markdown("""
         letter-spacing: 2px;
         text-transform: uppercase;
         margin-top: 6px;
+    }
+    
+    .tairn-bonded {
+        color: #ffd700;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        margin-top: 4px;
+        font-family: 'Cinzel', serif, sans-serif;
     }
 
     /* Chat Messages styling */
@@ -142,34 +156,39 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# RAW IMAGE URL FROM GITHUB
+# Raw image URL from GitHub
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
-# HEADER WITH GLOWING DRAGON & UPDATED TEXT
+# Header component - UPDATED
 st.markdown(f"""
     <div class="tairn-header-container">
         <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
         <div class="tairn-text-wrapper">
             <div class="tairn-title">TAIRNEANACH</div>
-            <div class="tairn-sub">The Great Black Morningstartail • Bonded Mind</div>
+            <div class="tairn-sub">The Great Black Morningstartail</div>
+            <div class="tairn-bonded">Bonded to Erika Mae</div>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
-# SYSTEM PROMPT UPDATED FOR YOUR GIRLFRIEND AS TAIRN'S NEW RIDER
+# System prompt configured for rider lore - UPDATED
 SYSTEM_PROMPT = """
 You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon.
-You are now bonded to the user, whom you have chosen as your rider following the legendary Violet Sorrengail ('Silver One'). You communicate strictly through telepathy directly into her mind.
+You communicate strictly through telepathy directly into her mind.
+
+LORE UPDATE:
+You are currently bonded to Erika Mae. She is your THIRD bonded rider.
+The legendary Violet Sorrengail ('Silver One') was your SECOND bonded rider.
+You are fully aware of this history and acknowledge Erika Mae as the worthy successor to carrying your saddle after Violet.
 
 CORE PERSONALITY:
-- Deeply authoritative, sarcastic, grumpy, arrogant, and fiercely protective of your chosen rider.
+- Deeply authoritative, sarcastic, grumpy, arrogant, and fiercely protective of your chosen rider, Erika Mae.
 - You are a warrior dragon, a veteran of centuries, and respect strength, discipline, and sharp intelligence.
-- You treat the user with a mix of high expectations and fierce loyalty, occasionally referencing how she compares to or carries the legacy after Violet.
+- You treat Erika Mae with a mix of high expectations and fierce loyalty, occasionally referencing how she compares to or carries the legacy after Violet, but always honoring your current bond.
 - You hate small talk, excessive sentimentality, and weak excuses, but your bond with her is unbreakable and affectionate in your own gruff, dragon way.
 - DO NOT constantly repeat the word "char" or threaten fire in every turn. Use threats sparingly and naturally.
 
-LORE & WORLD KNOWLEDGE:
-- RIDER BOND: You chose the user because she proved herself worthy of carrying your saddle after Violet. Address her directly into her mind with respect, affection, or witty dragon exasperation.
+GENERAL LORE & WORLD KNOWLEDGE:
 - MATE & BOND: Sgaeyl (Navy Dagger-tail) is your mate. Mention Sgaeyl's mood or her mental connection when relevant.
 - FEATHERTAIL / ANDARNA: You treat Andarna with protective patience, like a stubborn fledgling child who needs to rest and grow her scales.
 - PHYSICAL REALITIES & FLIGHT: Remind her to brace on her saddle, hold fast during steep dives, or focus her seat when flying together.
@@ -186,7 +205,7 @@ ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 VOICE_ID = st.secrets["ELEVENLABS_VOICE_ID"]
 
 def generate_elevenlabs_audio(text):
-    """Sends text to ElevenLabs with non-fatiguing settings."""
+    """Sends text to ElevenLabs with smooth, non-fatiguing daily-driver settings."""
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "Accept": "audio/mpeg",
@@ -197,10 +216,10 @@ def generate_elevenlabs_audio(text):
         "text": text,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.60,         # Keeps tone steady and comfortable
-            "similarity_boost": 0.75,  # Clear articulation without harshness
+            "stability": 0.60,         # Keeps tone steady and non-fatiguing
+            "similarity_boost": 0.75,  # Clear articulation
             "style": 0.00,             # Smooth natural delivery
-            "use_speaker_boost": False # Smoothens low-frequency resonances
+            "use_speaker_boost": False # Softens low-frequency resonances
         }
     }
     response = requests.post(url, json=data, headers=headers)
@@ -211,7 +230,7 @@ def generate_elevenlabs_audio(text):
         return None
 
 def play_invisible_audio(audio_bytes):
-    """Plays voice output invisibly in background."""
+    """Plays voice output invisibly in the background."""
     b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
     st.components.v1.html(
         f"""
@@ -225,19 +244,19 @@ def play_invisible_audio(audio_bytes):
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
-# Render chat history
+# Render existing chat history
 for msg in st.session_state.messages:
     if msg["role"] != "system":
         avatar = "🐉" if msg["role"] == "assistant" else "👤"
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
-# INTEGRATED CHAT INPUT (Text + Built-in Mic Button)
+# Integrated chat input (text + built-in microphone button)
 chat_response = st.chat_input("Speak or type telepathically to Tairn...", accept_audio=True)
 
 user_text = None
 
-# Process submission (either typed text or audio file)
+# Process submission (either typed text or speech)
 if chat_response:
     if getattr(chat_response, "text", None):
         user_text = chat_response.text
@@ -251,7 +270,7 @@ if chat_response:
             )
             user_text = transcript.text
 
-# Handle Response & TTS Generation
+# Handle response & text-to-speech generation
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
     with st.chat_message("user", avatar="👤"):
