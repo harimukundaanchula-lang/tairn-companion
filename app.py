@@ -1,88 +1,100 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from openai import OpenAI
 import requests
 
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Dark/Gold theme & layout
+# Inject Custom CSS for Gemini/Grok style UI + Dragon Mic Button Styling
 st.markdown("""
     <style>
-    /* Dark Dragon Theme Setup */
+    /* Dark Dragon Theme */
     .stApp {
         background-color: #0b0c10;
         color: #e0e0e0;
     }
     
-    /* Hide top Streamlit elements */
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
+    /* Hide top Streamlit header/footer elements */
+    header, footer, #MainMenu { visibility: hidden !important; }
     
-    /* Central Header with Custom Tairn Icon */
-    .header-container {
+    /* Header Styling */
+    .tairn-header {
         text-align: center;
-        padding-top: 10px;
-        padding-bottom: 15px;
+        padding: 10px 0 20px 0;
     }
-    .header-title {
+    .tairn-title {
         color: #d4af37;
         font-family: 'Cinzel', serif, sans-serif;
         font-size: 26px;
         font-weight: 700;
         letter-spacing: 2px;
-        margin-top: 8px;
+        margin: 5px 0 0 0;
     }
-    .header-sub {
+    .tairn-sub {
         color: #888888;
         font-size: 12px;
-        text-transform: uppercase;
         letter-spacing: 1px;
+        text-transform: uppercase;
     }
 
     /* Chat Messages styling */
     div[data-testid="stChatMessage"] {
         background-color: #141519;
-        border-radius: 14px;
+        border-radius: 15px;
         padding: 12px 18px;
         margin-bottom: 10px;
         border: 1px solid #22232a;
     }
+
+    /* Target Native Audio Input Button & Style as Dragon Button */
+    div[data-testid="stAudioInput"] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 15px 0;
+    }
+    div[data-testid="stAudioInput"] button {
+        background: linear-gradient(135deg, #d4af37, #8a7322) !important;
+        color: #0b0c10 !important;
+        border: 2px solid #ffd700 !important;
+        border-radius: 50% !important;
+        width: 70px !important;
+        height: 70px !important;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Pulsing gold glow animation when hovering/active */
+    div[data-testid="stAudioInput"] button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
+    }
+
+    /* Replace Mic Icon inside the native button with Dragon symbol 🐉 */
+    div[data-testid="stAudioInput"] button * {
+        font-size: 0px !important; /* hide default mic text/icon */
+    }
+    div[data-testid="stAudioInput"] button::after {
+        content: "🐉";
+        font-size: 32px !important;
+        display: block;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Custom SVG Graphic: Black Morningstartail Dragon with Golden Eyes
-TAIRN_SVG = """
-<svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Glowing Aura -->
-  <circle cx="50" cy="50" r="45" fill="url(#goldGlow)" opacity="0.15"/>
-  <!-- Dark Dragon Wings -->
-  <path d="M15 52C28 35 42 38 50 48C58 38 72 35 85 52C70 56 58 68 50 82C42 68 30 56 15 52Z" fill="#18191e" stroke="#d4af37" stroke-width="1.5"/>
-  <!-- Dragon Head/Snout (Black Morningstartail) -->
-  <path d="M50 22L41 38L45 50L50 55L55 50L59 38L50 22Z" fill="#0d0e12" stroke="#d4af37" stroke-width="1.5"/>
-  <!-- Golden Eyes (Fourth Wing Canon) -->
-  <circle cx="46" cy="38" r="1.8" fill="#ffd700"/>
-  <circle cx="54" cy="38" r="1.8" fill="#ffd700"/>
-  <!-- Morningstartail Spikes -->
-  <path d="M50 82L47 88L50 95L53 88L50 82Z" fill="#d4af37"/>
-  <path d="M44 87L40 90L46 91L44 87Z" fill="#d4af37"/>
-  <path d="M56 87L60 90L54 91L56 87Z" fill="#d4af37"/>
-  <defs>
-    <radialGradient id="goldGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(50 50) scale(45)">
-      <stop stop-color="#d4af37"/>
-      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-</svg>
-"""
-
-# App Header
-st.markdown(f"""
-    <div class="header-container">
-        {TAIRN_SVG}
-        <div class="header-title">TAIRNEANACH</div>
-        <div class="header-sub">Black Morningstartail • Basgiath War College</div>
+# Tairn Morningstartail Header SVG (Black Dragon, Gold Wings/Eyes)
+st.markdown("""
+    <div class="tairn-header">
+        <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" fill="#d4af37" fill-opacity="0.1"/>
+          <path d="M15 52C28 35 42 38 50 48C58 38 72 35 85 52C70 56 58 68 50 82C42 68 30 56 15 52Z" fill="#18191e" stroke="#d4af37" stroke-width="1.5"/>
+          <path d="M50 22L41 38L45 50L50 55L55 50L59 38L50 22Z" fill="#0d0e12" stroke="#d4af37" stroke-width="1.5"/>
+          <circle cx="46" cy="38" r="1.8" fill="#ffd700"/>
+          <circle cx="54" cy="38" r="1.8" fill="#ffd700"/>
+          <path d="M50 82L47 88L50 95L53 88L50 82Z" fill="#d4af37"/>
+        </svg>
+        <div class="tairn-title">TAIRNEANACH</div>
+        <div class="tairn-sub">Black Morningstartail • Basgiath War College</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -134,101 +146,25 @@ with chat_container:
             with st.chat_message(msg["role"], avatar=avatar):
                 st.write(msg["content"])
 
-# Text Input above Mic
+# Circular Dragon Voice Button centered above the Chat Input
+audio_file = st.audio_input("Record voice to Tairn", label_visibility="collapsed")
+
+# Chat Text Input Box
 user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
 
-# Press & Hold Mic Component with Animated Waves
-mic_html = """
-<div style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
-  <style>
-    .mic-container {
-      position: relative;
-      width: 70px;
-      height: 70px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .mic-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #d4af37, #8a7322);
-      border: 2px solid #ffd700;
-      color: #0b0c10;
-      font-size: 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      outline: none;
-      z-index: 2;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-      transition: transform 0.1s ease;
-    }
-    .mic-btn:active, .mic-btn.holding {
-      transform: scale(0.92);
-      background: linear-gradient(135deg, #ffd700, #b89628);
-    }
-    .wave {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid rgba(212, 175, 55, 0.6);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .holding ~ .wave-1 { animation: ripple 1.6s infinite ease-out; }
-    .holding ~ .wave-2 { animation: ripple 1.6s infinite ease-out 0.5s; }
-    .holding ~ .wave-3 { animation: ripple 1.6s infinite ease-out 1s; }
+user_text = None
 
-    @keyframes ripple {
-      0% {
-        transform: scale(1);
-        opacity: 0.8;
-      }
-      100% {
-        transform: scale(2.2);
-        opacity: 0;
-      }
-    }
-  </style>
+if audio_file:
+    with st.spinner("Tairn hears your mind..."):
+        audio_file.name = "input.wav"
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1", 
+            file=audio_file
+        )
+        user_text = transcript.text
 
-  <div class="mic-container">
-    <button id="micBtn" class="mic-btn">🎙️</button>
-    <div class="wave wave-1"></div>
-    <div class="wave wave-2"></div>
-    <div class="wave wave-3"></div>
-  </div>
-</div>
-
-<script>
-  const btn = document.getElementById('micBtn');
-  
-  btn.addEventListener('mousedown', startHold);
-  btn.addEventListener('mouseup', endHold);
-  btn.addEventListener('mouseleave', endHold);
-  btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
-  btn.addEventListener('touchend', (e) => { e.preventDefault(); endHold(); });
-
-  function startHold() {
-    btn.classList.add('holding');
-  }
-
-  function endHold() {
-    btn.classList.remove('holding');
-  }
-</script>
-"""
-
-# Render Mic button under text box
-components.html(mic_html, height=100)
-
-# Process Text Input
-user_text = user_text_input
+elif user_text_input:
+    user_text = user_text_input
 
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
