@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Minimalist Dark Theme
+# Custom CSS for Minimalist Dark Theme with Gold Header Accent
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -18,22 +18,27 @@ st.markdown("""
     /* Hide Streamlit Chrome Header & Footer */
     header, footer, #MainMenu { visibility: hidden !important; }
     
-    /* Header Styling */
+    /* Header Container Styling */
     .tairn-header {
         text-align: center;
-        padding: 10px 0 10px 0;
+        padding: 15px 10px;
+        background-color: #d4af37; /* Golden Background */
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
     }
     .tairn-title {
-        color: #d4af37;
+        color: #000000; /* Black Heading Text */
         font-family: 'Cinzel', serif, sans-serif;
-        font-size: 26px;
-        font-weight: 700;
+        font-size: 24px;
+        font-weight: 800;
         letter-spacing: 2px;
-        margin: 5px 0 0 0;
+        margin: 8px 0 2px 0;
     }
     .tairn-sub {
-        color: #888888;
+        color: #1a1a1a; /* Dark Text for Subtitle */
         font-size: 11px;
+        font-weight: 600;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
@@ -110,14 +115,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# CUSTOM DRAGON HEADER WITH YOUR GITHUB PNG IMAGE
+# CUSTOM DRAGON HEADER WITH GOLD BACKGROUND & BLACK TEXT
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
 st.markdown(f"""
     <div class="tairn-header">
-        <img src="{RAW_IMAGE_URL}" width="110" style="margin-bottom: 5px;">
-        <div class="tairn-title">TAIRNEANACH</div>
-        <div class="tairn-sub">Black Morningstartail • Basgiath War College</div>
+        <img src="{RAW_IMAGE_URL}" width="100" style="margin-bottom: 2px;">
+        <div class="tairn-title">TAIRNEANACH RELICIS</div>
+        <div class="tairn-sub">Black Morningstartail</div>
     </div>
 """, unsafe_allow_html=True)
 
