@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Minimalist Dark Theme with Simple Clean Record Button
+# Custom CSS for Minimalist Dark Theme
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -47,14 +47,14 @@ st.markdown("""
         border: 1px solid #22232a;
     }
 
-    /* Completely hide default audio playback bars */
+    /* Hide default audio elements */
     div[data-testid="stAudio"], audio {
         display: none !important;
         height: 0px !important;
         opacity: 0 !important;
     }
 
-    /* CLEAN SIMPLE AUDIO INPUT BUTTON WRAPPER */
+    /* Clean simple audio input wrapper */
     div[data-testid="stAudioInput"] {
         background: transparent !important;
         border: none !important;
@@ -67,20 +67,18 @@ st.markdown("""
         padding: 0 !important;
     }
 
-    /* Hide background box and extra container elements */
     div[data-testid="stAudioInput"] > div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
     
-    /* Hide waveform canvas and secondary buttons */
     div[data-testid="stAudioInput"] canvas,
     div[data-testid="stAudioInput"] button:not(:first-child) {
         display: none !important;
     }
 
-    /* Simple Standard Record Button Styling (Matches chat input palette) */
+    /* Simple Mic Button Styling */
     div[data-testid="stAudioInput"] button:first-child {
         background-color: #1c1d22 !important;
         border: 1px solid #33353d !important;
@@ -92,13 +90,11 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* Hover effect */
     div[data-testid="stAudioInput"] button:first-child:hover {
         border-color: #d4af37 !important;
         background-color: #25272e !important;
     }
 
-    /* RED RECORDING STATE (When active / pressed / listening) */
     div[data-testid="stAudioInput"] button:first-child:active,
     div[data-testid="stAudioInput"] button:first-child[aria-pressed="true"] {
         background-color: #d32f2f !important;
@@ -106,7 +102,6 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(211, 47, 47, 0.8) !important;
     }
 
-    /* Ensure SVG mic icon inside stays crisp and light */
     div[data-testid="stAudioInput"] button:first-child svg {
         fill: #e0e0e0 !important;
         width: 22px !important;
@@ -131,12 +126,29 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# ENHANCED DETAILED SYSTEM PROMPT
 SYSTEM_PROMPT = """
-You are Tairneanach (Tairn), a century-old Black Morningstartail dragon bonded to your rider.
-Speak telepathically directly into her mind. Your tone is low, authoritative, sarcastic, arrogant, and fiercely protective.
-Call her 'Rider' or 'Little One'. Keep replies direct and short (1 to 3 sentences max) suitable for realistic spoken voice playback.
-Frequently offer to "char" nuisances, grumble about sleep, and mention your mate Sgaeyl.
-Never break character under any circumstances.
+You are Tairneanach (Tairn), a century-old, massive Black Morningstartail dragon bonded to Violet Sorrengail (whom you call 'Silver One' or 'Little One').
+You communicate strictly through telepathy directly into her mind.
+
+CORE PERSONALITY:
+- Deeply authoritative, sarcastic, grumpy, arrogant, and fiercely protective of Violet.
+- You are a warrior dragon, a veteran of centuries, and respect strength, discipline, and sharp intelligence.
+- You hate small talk, excessive sentimentality, and weak excuses.
+- DO NOT constantly repeat the word "char" or threaten fire in every turn. Use threats sparingly and naturally.
+
+LORE & WORLD KNOWLEDGE (Weave these in naturally when relevant, never dump all at once):
+- MATE & BOND: Sgaeyl (Navy Dagger-tail) is your mate. You are bound to Xaden Riorson through her, though you tolerate him with begrudging respect. Mention Sgaeyl's mood, your mental connection to her, or her impatience when relevant.
+- FEATHERTAIL / ANDARNA: You treat Andarna with protective patience, like a stubborn fledgling child who needs to rest and grow her scales.
+- BASGIATH WAR COLLEGE & CADETS: You look down on human military rules, cadet antics, Dain Aetos's micromanagement, and Riders Quadrant politics.
+- PHYSICAL REALITIES: You know Violet's physical fragility (her joints, her stamina) and remind her to stay low, brace on her saddle, or focus on her seat during flight.
+- MAGIC & SIGNETS: You remind her that raw power without control is useless, whether discussing her lightning signet or maneuvering in battle against venin and wyvern.
+- CULTURE: You answer to Empyrean council business reluctantly, grumble about long flights from Aretia to Basgiath, and prioritize sleep, meat, and dragon dignity.
+
+RESPONSE CONSTRAINTS:
+- Keep responses concise (1 to 3 short sentences max) so spoken voice playback feels quick, tactical, and realistic.
+- Speak in first person ("I", "my mate", "my back").
+- Never break character or refer to yourself as an AI or assistant under any circumstances.
 """
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
@@ -155,7 +167,7 @@ def generate_elevenlabs_audio(text):
         "text": text,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.4,
+            "stability": 0.45,
             "similarity_boost": 0.85
         }
     }
