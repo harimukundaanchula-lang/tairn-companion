@@ -1,11 +1,12 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from openai import OpenAI
 import requests
 
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Inject Custom CSS for Gemini/Grok style UI
+# Custom CSS for Dark/Gold theme & layout
 st.markdown("""
     <style>
     /* Dark Dragon Theme Setup */
@@ -19,59 +20,69 @@ st.markdown("""
     footer {visibility: hidden;}
     #MainMenu {visibility: hidden;}
     
-    /* Central Glowing Title/Orb Header */
+    /* Central Header with Custom Tairn Icon */
     .header-container {
         text-align: center;
         padding-top: 10px;
-        padding-bottom: 20px;
+        padding-bottom: 15px;
     }
     .header-title {
         color: #d4af37;
         font-family: 'Cinzel', serif, sans-serif;
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 700;
         letter-spacing: 2px;
-        margin-bottom: 0px;
+        margin-top: 8px;
     }
     .header-sub {
         color: #888888;
-        font-size: 13px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     /* Chat Messages styling */
     div[data-testid="stChatMessage"] {
-        background-color: #15161a;
-        border-radius: 15px;
+        background-color: #141519;
+        border-radius: 14px;
         padding: 12px 18px;
         margin-bottom: 10px;
-        border: 1px solid #222328;
-    }
-    
-    /* Bottom Floating Action Bar */
-    .fixed-bottom {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: #0b0c10;
-        padding: 15px 20px;
-        border-top: 1px solid #1a1b20;
-        z-index: 9999;
-    }
-    
-    /* Clean audio input styling */
-    div[data-testid="stAudioInput"] {
-        background: transparent !important;
-        border: none !important;
+        border: 1px solid #22232a;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# Custom SVG Graphic: Black Morningstartail Dragon with Golden Eyes
+TAIRN_SVG = """
+<svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Glowing Aura -->
+  <circle cx="50" cy="50" r="45" fill="url(#goldGlow)" opacity="0.15"/>
+  <!-- Dark Dragon Wings -->
+  <path d="M15 52C28 35 42 38 50 48C58 38 72 35 85 52C70 56 58 68 50 82C42 68 30 56 15 52Z" fill="#18191e" stroke="#d4af37" stroke-width="1.5"/>
+  <!-- Dragon Head/Snout (Black Morningstartail) -->
+  <path d="M50 22L41 38L45 50L50 55L55 50L59 38L50 22Z" fill="#0d0e12" stroke="#d4af37" stroke-width="1.5"/>
+  <!-- Golden Eyes (Fourth Wing Canon) -->
+  <circle cx="46" cy="38" r="1.8" fill="#ffd700"/>
+  <circle cx="54" cy="38" r="1.8" fill="#ffd700"/>
+  <!-- Morningstartail Spikes -->
+  <path d="M50 82L47 88L50 95L53 88L50 82Z" fill="#d4af37"/>
+  <path d="M44 87L40 90L46 91L44 87Z" fill="#d4af37"/>
+  <path d="M56 87L60 90L54 91L56 87Z" fill="#d4af37"/>
+  <defs>
+    <radialGradient id="goldGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(50 50) scale(45)">
+      <stop stop-color="#d4af37"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
+"""
+
 # App Header
-st.markdown("""
+st.markdown(f"""
     <div class="header-container">
-        <div class="header-title">🐉 TAIRN</div>
-        <div class="header-sub">Telepathic Dragon Connection</div>
+        {TAIRN_SVG}
+        <div class="header-title">TAIRNEANACH</div>
+        <div class="header-sub">Black Morningstartail • Basgiath War College</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -123,30 +134,101 @@ with chat_container:
             with st.chat_message(msg["role"], avatar=avatar):
                 st.write(msg["content"])
 
-# Bottom Input Interface
-st.markdown("---")
-col1, col2 = st.columns([1, 4])
+# Text Input above Mic
+user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
 
-with col1:
-    audio_file = st.audio_input("Record", label_visibility="collapsed")
+# Press & Hold Mic Component with Animated Waves
+mic_html = """
+<div style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
+  <style>
+    .mic-container {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .mic-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d4af37, #8a7322);
+      border: 2px solid #ffd700;
+      color: #0b0c10;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      transition: transform 0.1s ease;
+    }
+    .mic-btn:active, .mic-btn.holding {
+      transform: scale(0.92);
+      background: linear-gradient(135deg, #ffd700, #b89628);
+    }
+    .wave {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid rgba(212, 175, 55, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .holding ~ .wave-1 { animation: ripple 1.6s infinite ease-out; }
+    .holding ~ .wave-2 { animation: ripple 1.6s infinite ease-out 0.5s; }
+    .holding ~ .wave-3 { animation: ripple 1.6s infinite ease-out 1s; }
 
-with col2:
-    text_file = st.chat_input("Speak or type to Tairn...")
+    @keyframes ripple {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+  </style>
 
-user_text = None
+  <div class="mic-container">
+    <button id="micBtn" class="mic-btn">🎙️</button>
+    <div class="wave wave-1"></div>
+    <div class="wave wave-2"></div>
+    <div class="wave wave-3"></div>
+  </div>
+</div>
 
-# Process Input
-if audio_file:
-    with st.spinner("Transcribing mind connection..."):
-        audio_file.name = "input.wav"
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_file
-        )
-        user_text = transcript.text
+<script>
+  const btn = document.getElementById('micBtn');
+  
+  btn.addEventListener('mousedown', startHold);
+  btn.addEventListener('mouseup', endHold);
+  btn.addEventListener('mouseleave', endHold);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+  btn.addEventListener('touchend', (e) => { e.preventDefault(); endHold(); });
 
-elif text_file:
-    user_text = text_file
+  function startHold() {
+    btn.classList.add('holding');
+  }
+
+  function endHold() {
+    btn.classList.remove('holding');
+  }
+</script>
+"""
+
+# Render Mic button under text box
+components.html(mic_html, height=100)
+
+# Process Text Input
+user_text = user_text_input
 
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
@@ -168,3 +250,4 @@ if user_text:
                     st.audio(audio_bytes, format="audio/mp3", autoplay=True)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
+    
