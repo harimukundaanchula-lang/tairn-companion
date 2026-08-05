@@ -1,5 +1,6 @@
 import streamlit as st
 import base64
+import textwrap
 from openai import OpenAI
 import requests
 
@@ -110,36 +111,27 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# DRAGON EMBLEM SVG HEADER (Redesigned Dragon Emblem)
-st.markdown("""
+# DRAGON EMBLEM HEADER FIXED WITH DEDENT
+header_html = textwrap.dedent("""
     <div class="tairn-header">
         <svg width="75" height="75" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer Subtle Gold Glow Ring -->
           <circle cx="50" cy="50" r="44" fill="#141519" stroke="#d4af37" stroke-width="1.5" stroke-opacity="0.6"/>
-          
-          <!-- Wings Spread -->
           <path d="M50 38C38 22 20 20 12 30C22 38 34 42 46 48C32 50 20 58 14 68C26 66 38 60 48 54Z" fill="#d4af37"/>
           <path d="M50 38C62 22 80 20 88 30C78 38 66 42 54 48C68 50 80 58 86 68C74 66 62 60 52 54Z" fill="#d4af37"/>
-          
-          <!-- Dragon Head and Horns -->
           <path d="M50 18L46 28L48 38L50 42L52 38L54 28L50 18Z" fill="#ffd700"/>
           <path d="M46 26L40 20L44 30Z" fill="#d4af37"/>
           <path d="M54 26L60 20L56 30Z" fill="#d4af37"/>
-          
-          <!-- Dragon Eyes -->
           <circle cx="48" cy="30" r="1.2" fill="#000000"/>
           <circle cx="52" cy="30" r="1.2" fill="#000000"/>
-          
-          <!-- Body and Tail -->
           <path d="M48 42C48 58 45 68 50 85C52 68 52 58 52 42Z" fill="#ffd700"/>
-          
-          <!-- Morningstartail Blade Tip -->
           <path d="M50 85L44 78L50 92L56 78L50 85Z" fill="#d4af37"/>
         </svg>
         <div class="tairn-title">TAIRNEANACH</div>
         <div class="tairn-sub">Black Morningstartail • Basgiath War College</div>
     </div>
-""", unsafe_allow_html=True)
+""")
+
+st.markdown(header_html, unsafe_allow_html=True)
 
 # SYSTEM PROMPT
 SYSTEM_PROMPT = """
