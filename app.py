@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Minimalist Dark Theme with Gold Header Accent
+# Custom CSS for Minimalist Dark Theme with Overlapping Glowing Dragon Header
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -18,29 +18,55 @@ st.markdown("""
     /* Hide Streamlit Chrome Header & Footer */
     header, footer, #MainMenu { visibility: hidden !important; }
     
-    /* Header Container Styling */
-    .tairn-header {
+    /* Overlapping Header Container */
+    .tairn-header-container {
+        position: relative;
         text-align: center;
-        padding: 15px 10px;
-        background-color: #d4af37; /* Golden Background */
-        border-radius: 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        padding: 30px 0 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
     }
+
+    /* Large Dragon Image with Golden Border Glow */
+    .tairn-dragon-glow {
+        position: absolute;
+        top: -10px;
+        width: 180px;
+        height: auto;
+        z-index: 1;
+        opacity: 0.85;
+        /* Golden drop-shadow glow around the PNG borders */
+        filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.8)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.4));
+        pointer-events: none;
+    }
+
+    /* Header Text Layered Above Image */
+    .tairn-text-wrapper {
+        position: relative;
+        z-index: 2;
+        margin-top: 60px; /* Pushes text down so it beautifully overlaps the lower body */
+        text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.9), 0px 0px 15px rgba(0, 0, 0, 0.9);
+    }
+
     .tairn-title {
-        color: #000000; /* Black Heading Text */
+        color: #ffd700;
         font-family: 'Cinzel', serif, sans-serif;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 800;
-        letter-spacing: 2px;
-        margin: 8px 0 2px 0;
+        letter-spacing: 3px;
+        margin: 0;
     }
+
     .tairn-sub {
-        color: #1a1a1a; /* Dark Text for Subtitle */
-        font-size: 11px;
+        color: #cccccc;
+        font-size: 12px;
         font-weight: 600;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
+        margin-top: 4px;
     }
 
     /* Chat Messages styling */
@@ -115,14 +141,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# CUSTOM DRAGON HEADER WITH GOLD BACKGROUND & BLACK TEXT
+# RAW IMAGE URL FROM GITHUB
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
+# HEADER WITH OVERLAPPING GLOWING DRAGON & UPDATED TEXT
 st.markdown(f"""
-    <div class="tairn-header">
-        <img src="{RAW_IMAGE_URL}" width="100" style="margin-bottom: 2px;">
-        <div class="tairn-title">TAIRNEANACH RELICIS</div>
-        <div class="tairn-sub">Black Morningstartail</div>
+    <div class="tairn-header-container">
+        <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
+        <div class="tairn-text-wrapper">
+            <div class="tairn-title">TAIRNEANACH</div>
+            <div class="tairn-sub">The Great Black Morningstartail</div>
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -246,4 +275,3 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-    
