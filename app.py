@@ -1,11 +1,12 @@
 import streamlit as st
+import base64
 from openai import OpenAI
 import requests
 
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Inject Custom CSS for Gemini/Grok style UI + Dragon Mic Button Styling
+# Custom CSS for Dark/Gold theme, Dragon Mic styling, and Hiding Audio Player Bar
 st.markdown("""
     <style>
     /* Dark Dragon Theme */
@@ -20,7 +21,7 @@ st.markdown("""
     /* Header Styling */
     .tairn-header {
         text-align: center;
-        padding: 10px 0 20px 0;
+        padding: 10px 0 10px 0;
     }
     .tairn-title {
         color: #d4af37;
@@ -32,7 +33,7 @@ st.markdown("""
     }
     .tairn-sub {
         color: #888888;
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
@@ -46,13 +47,22 @@ st.markdown("""
         border: 1px solid #22232a;
     }
 
-    /* Target Native Audio Input Button & Style as Dragon Button */
+    /* HIDE THE MEDIA PLAYER BAR COMPLETELY */
+    div[data-testid="stAudio"], audio {
+        display: none !important;
+        height: 0px !important;
+        opacity: 0 !important;
+    }
+
+    /* Target Native Audio Input Container */
     div[data-testid="stAudioInput"] {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 15px 0;
+        margin: 10px 0;
     }
+
+    /* Style the main recording button as a circular gold dragon emblem */
     div[data-testid="stAudioInput"] button {
         background: linear-gradient(135deg, #d4af37, #8a7322) !important;
         color: #0b0c10 !important;
@@ -63,16 +73,16 @@ st.markdown("""
         box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
         transition: all 0.3s ease !important;
     }
-    
-    /* Pulsing gold glow animation when hovering/active */
+
+    /* Hover effect */
     div[data-testid="stAudioInput"] button:hover {
         transform: scale(1.05);
         box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
     }
 
-    /* Replace Mic Icon inside the native button with Dragon symbol 🐉 */
+    /* Replace default mic icon with Dragon Emoji */
     div[data-testid="stAudioInput"] button * {
-        font-size: 0px !important; /* hide default mic text/icon */
+        font-size: 0px !important;
     }
     div[data-testid="stAudioInput"] button::after {
         content: "🐉";
@@ -85,7 +95,7 @@ st.markdown("""
 # Tairn Morningstartail Header SVG (Black Dragon, Gold Wings/Eyes)
 st.markdown("""
     <div class="tairn-header">
-        <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="65" height="65" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="45" fill="#d4af37" fill-opacity="0.1"/>
           <path d="M15 52C28 35 42 38 50 48C58 38 72 35 85 52C70 56 58 68 50 82C42 68 30 56 15 52Z" fill="#18191e" stroke="#d4af37" stroke-width="1.5"/>
           <path d="M50 22L41 38L45 50L50 55L55 50L59 38L50 22Z" fill="#0d0e12" stroke="#d4af37" stroke-width="1.5"/>
@@ -133,10 +143,20 @@ def generate_elevenlabs_audio(text):
         st.error(f"ElevenLabs Error ({response.status_code}): {response.text}")
         return None
 
+def play_invisible_audio(audio_bytes):
+    """Encodes audio to base64 and plays seamlessly in the background with zero visible UI."""
+    b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
+    audio_html = f"""
+    <audio autoplay style="display:none;">
+        <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+    </audio>
+    """
+    st.markdown(audio_html, unsafe_allow_html=True)
+
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
-# Container for main chat display
+# Chat Container
 chat_container = st.container()
 
 with chat_container:
@@ -146,10 +166,10 @@ with chat_container:
             with st.chat_message(msg["role"], avatar=avatar):
                 st.write(msg["content"])
 
-# Circular Dragon Voice Button centered above the Chat Input
-audio_file = st.audio_input("Record voice to Tairn", label_visibility="collapsed")
+# Circular Dragon Voice Button
+audio_file = st.audio_input("Record voice", label_visibility="collapsed")
 
-# Chat Text Input Box
+# Text Input Box
 user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
 
 user_text = None
@@ -183,7 +203,7 @@ if user_text:
                 
                 audio_bytes = generate_elevenlabs_audio(tairn_reply)
                 if audio_bytes:
-                    st.audio(audio_bytes, format="audio/mp3", autoplay=True)
+                    play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
     
