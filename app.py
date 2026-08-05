@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Dark/Gold theme, Dragon Mic styling, and Hiding Audio Player Bar
+# Custom CSS for Minimalist Dark Theme & Glowing Red Dragon Mic
 st.markdown("""
     <style>
     /* Dark Dragon Theme */
@@ -47,47 +47,62 @@ st.markdown("""
         border: 1px solid #22232a;
     }
 
-    /* HIDE THE MEDIA PLAYER BAR COMPLETELY */
+    /* HIDE THE MEDIA PLAYER BAR ENTIRELY */
     div[data-testid="stAudio"], audio {
         display: none !important;
         height: 0px !important;
         opacity: 0 !important;
     }
 
-    /* Target Native Audio Input Container */
+    /* CLEAN AUDIO INPUT WRAPPER */
     div[data-testid="stAudioInput"] {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 10px 0;
+        margin: 15px 0;
     }
 
-    /* Style the main recording button as a circular gold dragon emblem */
+    /* Hide standard waveform box and internal secondary controls */
+    div[data-testid="stAudioInput"] > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Target ONLY the main circular button */
     div[data-testid="stAudioInput"] button {
         background: linear-gradient(135deg, #d4af37, #8a7322) !important;
-        color: #0b0c10 !important;
+        color: transparent !important;
         border: 2px solid #ffd700 !important;
         border-radius: 50% !important;
-        width: 70px !important;
-        height: 70px !important;
+        width: 72px !important;
+        height: 72px !important;
         box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
-        transition: all 0.3s ease !important;
+        transition: all 0.2s ease-in-out !important;
+        position: relative;
+        cursor: pointer;
     }
 
-    /* Hover effect */
-    div[data-testid="stAudioInput"] button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
-    }
-
-    /* Replace default mic icon with Dragon Emoji */
-    div[data-testid="stAudioInput"] button * {
-        font-size: 0px !important;
-    }
+    /* Display Dragon Emoji inside main button */
     div[data-testid="stAudioInput"] button::after {
         content: "🐉";
-        font-size: 32px !important;
-        display: block;
+        font-size: 34px !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    /* WHEN PRESSED / ACTIVE: Turn Button Fiery Red (Listening) */
+    div[data-testid="stAudioInput"] button:active,
+    div[data-testid="stAudioInput"] button[aria-pressed="true"] {
+        background: linear-gradient(135deg, #e63946, #900c3f) !important;
+        border-color: #ff4d4d !important;
+        box-shadow: 0 0 35px rgba(230, 57, 70, 0.9) !important;
+        transform: scale(0.95);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -144,7 +159,7 @@ def generate_elevenlabs_audio(text):
         return None
 
 def play_invisible_audio(audio_bytes):
-    """Encodes audio to base64 and plays seamlessly in the background with zero visible UI."""
+    """Plays voice output invisibly in background."""
     b64_audio = base64.b64encode(audio_bytes).decode("utf-8")
     audio_html = f"""
     <audio autoplay style="display:none;">
@@ -166,7 +181,7 @@ with chat_container:
             with st.chat_message(msg["role"], avatar=avatar):
                 st.write(msg["content"])
 
-# Circular Dragon Voice Button
+# Single Clean Dragon Voice Orb
 audio_file = st.audio_input("Record voice", label_visibility="collapsed")
 
 # Text Input Box
