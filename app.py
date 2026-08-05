@@ -6,7 +6,7 @@ import requests
 # Page setup
 st.set_page_config(page_title="Tairn Telepathy", page_icon="🐉", layout="centered", initial_sidebar_state="collapsed")
 
-# Custom CSS for Minimalist Dark Theme with Overlapping Glowing Dragon Header
+# Custom CSS for Minimalist Dark Theme with Overlapping Glowing Dragon Header & Magical Mic Button
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -48,7 +48,7 @@ st.markdown("""
     .tairn-text-wrapper {
         position: relative;
         z-index: 2;
-        margin-top: 130px; /* Pushes text to sit beautifully across the larger image body */
+        margin-top: 130px;
         text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.95), 0px 0px 20px rgba(0, 0, 0, 0.9);
     }
 
@@ -79,11 +79,71 @@ st.markdown("""
         border: 1px solid #22232a;
     }
 
-    /* Hide default audio elements */
+    /* Hide default audio playback elements */
     div[data-testid="stAudio"], audio {
         display: none !important;
         height: 0px !important;
         opacity: 0 !important;
+    }
+
+    /* MAGICAL RECORD BUTTON STYLING (Inside Chat Input) */
+    
+    /* 1. Expand the button size & touch area (3x larger area) */
+    div[data-testid="stChatInput"] button {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        padding: 10px !important;
+        margin: 2px !important;
+        border-radius: 50% !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        background: rgba(28, 29, 34, 0.8) !important;
+    }
+
+    /* Make inner icon larger */
+    div[data-testid="stChatInput"] button svg {
+        width: 24px !important;
+        height: 24px !important;
+        fill: #d4af37 !important;
+        transition: transform 0.3s ease !important;
+    }
+
+    /* 2. Hover state animation */
+    div[data-testid="stChatInput"] button:hover {
+        transform: scale(1.1);
+        border-color: #ffd700 !important;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 0 10px rgba(212, 175, 55, 0.3) !important;
+    }
+
+    /* 3. Magical Pulsing Recording Animation when Active/Recording */
+    @keyframes dragonPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 10px rgba(255, 87, 34, 0.6);
+            transform: scale(1.05);
+        }
+        50% {
+            box-shadow: 0 0 0 14px rgba(212, 175, 55, 0), 0 0 25px rgba(255, 87, 34, 0.9);
+            transform: scale(1.15);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0), 0 0 10px rgba(255, 87, 34, 0.6);
+            transform: scale(1.05);
+        }
+    }
+
+    div[data-testid="stChatInput"] button:active,
+    div[data-testid="stChatInput"] button[aria-pressed="true"],
+    div[data-testid="stChatInput"] button[data-is-recording="true"] {
+        background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(20,21,25,0.9) 100%) !important;
+        border-color: #ff5722 !important;
+        animation: dragonPulse 1.5s infinite ease-in-out !important;
+    }
+
+    div[data-testid="stChatInput"] button:active svg,
+    div[data-testid="stChatInput"] button[aria-pressed="true"] svg {
+        fill: #ff5722 !important;
     }
     </style>
 """, unsafe_allow_html=True)
