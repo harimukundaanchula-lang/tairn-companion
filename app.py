@@ -70,6 +70,8 @@ user_text = None
 # 1. Handle Voice Input via Whisper
 if audio_file:
     with st.spinner("Tairn is listening to your voice..."):
+        # Explicitly set filename so OpenAI Whisper accepts the Streamlit audio stream
+        audio_file.name = "input.wav"
         transcript = client.audio.transcriptions.create(
             model="whisper-1", 
             file=audio_file
@@ -101,4 +103,4 @@ if user_text:
                 st.audio(audio_bytes, format="audio/mp3", autoplay=True)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-  
+    
