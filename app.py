@@ -110,7 +110,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# CUSTOM DRAGON HEADER WITH YOUR SPECIFIC PNG URL
+# CUSTOM DRAGON HEADER WITH YOUR GITHUB PNG IMAGE
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
 st.markdown(f"""
