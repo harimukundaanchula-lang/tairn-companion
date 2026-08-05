@@ -85,67 +85,13 @@ st.markdown("""
         height: 0px !important;
         opacity: 0 !important;
     }
-
-    /* Clean simple audio input wrapper */
-    div[data-testid="stAudioInput"] {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        margin-top: 10px !important;
-        margin-bottom: 5px !important;
-        padding: 0 !important;
-    }
-
-    div[data-testid="stAudioInput"] > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    
-    div[data-testid="stAudioInput"] canvas,
-    div[data-testid="stAudioInput"] button:not(:first-child) {
-        display: none !important;
-    }
-
-    /* Simple Mic Button Styling */
-    div[data-testid="stAudioInput"] button:first-child {
-        background-color: #1c1d22 !important;
-        border: 1px solid #33353d !important;
-        border-radius: 50% !important;
-        width: 52px !important;
-        height: 52px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-        transition: all 0.2s ease-in-out !important;
-        cursor: pointer !important;
-    }
-
-    div[data-testid="stAudioInput"] button:first-child:hover {
-        border-color: #d4af37 !important;
-        background-color: #25272e !important;
-    }
-
-    div[data-testid="stAudioInput"] button:first-child:active,
-    div[data-testid="stAudioInput"] button:first-child[aria-pressed="true"] {
-        background-color: #d32f2f !important;
-        border-color: #ff5252 !important;
-        box-shadow: 0 0 15px rgba(211, 47, 47, 0.8) !important;
-    }
-
-    div[data-testid="stAudioInput"] button:first-child svg {
-        fill: #e0e0e0 !important;
-        width: 22px !important;
-        height: 22px !important;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # RAW IMAGE URL FROM GITHUB
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
-# HEADER WITH DOUBLED GLOWING DRAGON & OVERLAPPING TEXT
+# HEADER WITH GLOWING DRAGON & OVERLAPPING TEXT
 st.markdown(f"""
     <div class="tairn-header-container">
         <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
@@ -223,9 +169,6 @@ def play_invisible_audio(audio_bytes):
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
-if "last_processed_audio" not in st.session_state:
-    st.session_state.last_processed_audio = None
-
 # Render chat history
 for msg in st.session_state.messages:
     if msg["role"] != "system":
@@ -233,28 +176,27 @@ for msg in st.session_state.messages:
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
-# Standard Simple Record Button placed right above text input
-audio_file = st.audio_input("Record voice", label_visibility="collapsed", key="simple_mic")
-
-# Text Input Box
-user_text_input = st.chat_input("Speak or type telepathically to Tairn...")
+# INTEGRATED CHAT INPUT (Text + Built-in Mic Button)
+chat_response = st.chat_input("Speak or type telepathically to Tairn...", accept_audio=True)
 
 user_text = None
 
-# PRIORITIZE TEXT INPUT
-if user_text_input:
-    user_text = user_text_input
+# Process submission (either typed text or audio file)
+if chat_response:
+    # If text message submitted
+    if getattr(chat_response, "text", None):
+        user_text = chat_response.text
 
-# PROCESS VOICE INPUT ONLY IF NEW
-elif audio_file and audio_file != st.session_state.last_processed_audio:
-    st.session_state.last_processed_audio = audio_file
-    with st.spinner("Tairn hears your mind..."):
-        audio_file.name = "input.wav"
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_file
-        )
-        user_text = transcript.text
+    # If recorded voice audio submitted
+    elif getattr(chat_response, "audio", None):
+        with st.spinner("Tairn hears your mind..."):
+            audio_file = chat_response.audio
+            audio_file.name = "input.wav"
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+            user_text = transcript.text
 
 # Handle Response & TTS Generation
 if user_text:
@@ -276,4 +218,3 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-    
