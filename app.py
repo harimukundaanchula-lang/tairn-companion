@@ -30,7 +30,7 @@ ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 VOICE_ID = st.secrets["ELEVENLABS_VOICE_ID"]
 
 def generate_elevenlabs_audio(text):
-    """Sends text to ElevenLabs and returns audio bytes using Chuck Miller voice."""
+    """Sends text to ElevenLabs and returns audio bytes."""
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "Accept": "audio/mpeg",
@@ -39,16 +39,19 @@ def generate_elevenlabs_audio(text):
     }
     data = {
         "text": text,
-        "model_id": "eleven_monolingual_v1",
+        "model_id": "eleven_multilingual_v2",
         "voice_settings": {
             "stability": 0.4,
             "similarity_boost": 0.85
         }
     }
     response = requests.post(url, json=data, headers=headers)
+    
     if response.status_code == 200:
         return response.content
-    return None
+    else:
+        st.error(f"ElevenLabs Error ({response.status_code}): {response.text}")
+        return None
 
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -70,7 +73,6 @@ user_text = None
 # 1. Handle Voice Input via Whisper
 if audio_file:
     with st.spinner("Tairn is listening to your voice..."):
-        # Explicitly set filename so OpenAI Whisper accepts the Streamlit audio stream
         audio_file.name = "input.wav"
         transcript = client.audio.transcriptions.create(
             model="whisper-1", 
