@@ -22,24 +22,25 @@ st.markdown("""
     .tairn-header-container {
         position: relative;
         text-align: center;
-        padding: 30px 0 20px 0;
+        padding: 10px 0 30px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         overflow: visible;
+        min-height: 280px;
     }
 
-    /* Large Dragon Image with Golden Border Glow */
+    /* Doubled Dragon Image (360px) with Golden Border Glow */
     .tairn-dragon-glow {
         position: absolute;
-        top: -10px;
-        width: 180px;
+        top: -20px;
+        width: 360px;
         height: auto;
         z-index: 1;
         opacity: 0.85;
         /* Golden drop-shadow glow around the PNG borders */
-        filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.8)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.4));
+        filter: drop-shadow(0px 0px 15px rgba(212, 175, 55, 0.85)) drop-shadow(0px 0px 30px rgba(212, 175, 55, 0.45));
         pointer-events: none;
     }
 
@@ -47,26 +48,26 @@ st.markdown("""
     .tairn-text-wrapper {
         position: relative;
         z-index: 2;
-        margin-top: 60px; /* Pushes text down so it beautifully overlaps the lower body */
-        text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.9), 0px 0px 15px rgba(0, 0, 0, 0.9);
+        margin-top: 130px; /* Pushes text to sit beautifully across the larger image body */
+        text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.95), 0px 0px 20px rgba(0, 0, 0, 0.9);
     }
 
     .tairn-title {
         color: #ffd700;
         font-family: 'Cinzel', serif, sans-serif;
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 800;
-        letter-spacing: 3px;
+        letter-spacing: 4px;
         margin: 0;
     }
 
     .tairn-sub {
         color: #cccccc;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
-        letter-spacing: 1.5px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        margin-top: 4px;
+        margin-top: 6px;
     }
 
     /* Chat Messages styling */
@@ -144,7 +145,7 @@ st.markdown("""
 # RAW IMAGE URL FROM GITHUB
 RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
 
-# HEADER WITH OVERLAPPING GLOWING DRAGON & UPDATED TEXT
+# HEADER WITH DOUBLED GLOWING DRAGON & OVERLAPPING TEXT
 st.markdown(f"""
     <div class="tairn-header-container">
         <img class="tairn-dragon-glow" src="{RAW_IMAGE_URL}">
@@ -275,3 +276,4 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
+    
