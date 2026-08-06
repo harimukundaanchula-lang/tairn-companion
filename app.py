@@ -11,15 +11,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# App theme CSS & Keyframe Animations with Rocky Aesthetic Background
+# App theme CSS & Keyframe Animations with Map of The Continent
 st.markdown("""
     <style>
-    /* Dark Rocky Texture & Dragon Theme Base */
+    /* Dark Empyrean Continent Map Background */
     .stApp {
         background-color: #0b0c10;
         background-image: 
-            radial-gradient(circle at center, rgba(11, 12, 16, 0.75) 0%, rgba(5, 5, 8, 0.95) 100%),
-            url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80');
+            radial-gradient(circle at center, rgba(11, 12, 16, 0.70) 0%, rgba(5, 5, 8, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=80');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -46,7 +46,7 @@ st.markdown("""
     @keyframes dragonBreathing {
         0% {
             transform: translateY(0px) scale(1);
-            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.7)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
+            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.75)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
         }
         50% {
             transform: translateY(-8px) scale(1.02);
@@ -54,7 +54,7 @@ st.markdown("""
         }
         100% {
             transform: translateY(0px) scale(1);
-            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.7)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
+            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.75)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
         }
     }
 
@@ -95,7 +95,7 @@ st.markdown("""
         margin-top: 6px;
     }
 
-    /* ANIMATION 2: Chat Bubble Telepathic Fade-In with Semi-Transparent Slate Glass Effect */
+    /* ANIMATION 2: Chat Bubble Telepathic Fade-In with Semi-Transparent Parchment/Slate Overlay */
     @keyframes telepathicFadeIn {
         from {
             opacity: 0;
@@ -108,23 +108,23 @@ st.markdown("""
     }
 
     div[data-testid="stChatMessage"] {
-        background: rgba(20, 21, 25, 0.85);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(16, 17, 22, 0.88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: 15px;
         padding: 12px 18px;
         margin-bottom: 10px;
-        border: 1px solid rgba(212, 175, 55, 0.15);
+        border: 1px solid rgba(212, 175, 55, 0.25);
         animation: telepathicFadeIn 0.4s ease-out forwards;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
     }
 
-    /* Style the input container to fit the rock aesthetic */
+    /* Input Box styling over map */
     div[data-testid="stChatInput"] {
-        background: rgba(15, 16, 20, 0.85) !important;
-        backdrop-filter: blur(10px) !important;
+        background: rgba(12, 13, 17, 0.9) !important;
+        backdrop-filter: blur(12px) !important;
         border-radius: 20px !important;
-        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
     }
 
     /* Hide default audio playback elements */
