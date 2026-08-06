@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# App theme CSS injection
+# App theme CSS & Keyframe Animations
 st.markdown("""
     <style>
     /* Dark Dragon Theme Base */
@@ -36,16 +36,31 @@ st.markdown("""
         min-height: 280px;
     }
 
-    /* Doubled Dragon Image (360px) with Golden Border Glow */
+    /* ANIMATION 1: Dragon Breathing & Glowing */
+    @keyframes dragonBreathing {
+        0% {
+            transform: translateY(0px) scale(1);
+            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.7)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
+        }
+        50% {
+            transform: translateY(-8px) scale(1.02);
+            filter: drop-shadow(0px 0px 22px rgba(255, 140, 0, 0.95)) drop-shadow(0px 0px 40px rgba(212, 175, 55, 0.6));
+        }
+        100% {
+            transform: translateY(0px) scale(1);
+            filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.7)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
+        }
+    }
+
     .tairn-dragon-glow {
         position: absolute;
         top: -20px;
         width: 360px;
         height: auto;
         z-index: 1;
-        opacity: 0.85;
-        filter: drop-shadow(0px 0px 15px rgba(212, 175, 55, 0.85)) drop-shadow(0px 0px 30px rgba(212, 175, 55, 0.45));
+        opacity: 0.9;
         pointer-events: none;
+        animation: dragonBreathing 5s infinite ease-in-out;
     }
 
     /* Header Text Layered Above Image */
@@ -74,13 +89,26 @@ st.markdown("""
         margin-top: 6px;
     }
 
-    /* Chat Messages styling */
+    /* ANIMATION 2: Chat Bubble Telepathic Fade-In */
+    @keyframes telepathicFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
     div[data-testid="stChatMessage"] {
         background-color: #141519;
         border-radius: 15px;
         padding: 12px 18px;
         margin-bottom: 10px;
         border: 1px solid #22232a;
+        animation: telepathicFadeIn 0.4s ease-out forwards;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
 
     /* Hide default audio playback elements */
@@ -90,7 +118,7 @@ st.markdown("""
         opacity: 0 !important;
     }
 
-    /* MAGICAL RECORD BUTTON STYLING (Inside Chat Input) */
+    /* ANIMATION 3: Record Button Glow & Pulse */
     div[data-testid="stChatInput"] button {
         width: 48px !important;
         height: 48px !important;
@@ -112,9 +140,9 @@ st.markdown("""
     }
 
     div[data-testid="stChatInput"] button:hover {
-        transform: scale(1.1);
+        transform: scale(1.12);
         border-color: #ffd700 !important;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 0 10px rgba(212, 175, 55, 0.3) !important;
+        box-shadow: 0 0 18px rgba(212, 175, 55, 0.7), inset 0 0 10px rgba(212, 175, 55, 0.4) !important;
     }
 
     @keyframes dragonPulse {
@@ -137,7 +165,7 @@ st.markdown("""
     div[data-testid="stChatInput"] button[data-is-recording="true"] {
         background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(20,21,25,0.9) 100%) !important;
         border-color: #ff5722 !important;
-        animation: dragonPulse 1.5s infinite ease-in-out !important;
+        animation: dragonPulse 1.2s infinite ease-in-out !important;
     }
 
     div[data-testid="stChatInput"] button:active svg,
@@ -192,21 +220,21 @@ ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 VOICE_ID = st.secrets["ELEVENLABS_VOICE_ID"]
 
 def generate_elevenlabs_audio(text):
-    """Sends text to ElevenLabs using xi-api-key header."""
+    """Sends text to ElevenLabs."""
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "Accept": "audio/mpeg",
         "Content-Type": "application/json",
-        "xi-api-key": ELEVENLABS_API_KEY
+        "xi-api-key": ELEVENLABS_API_KEY.strip()
     }
     data = {
         "text": text,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.60,         # Keeps tone steady and non-fatiguing
-            "similarity_boost": 0.75,  # Clear articulation
-            "style": 0.00,             # Smooth natural delivery
-            "use_speaker_boost": False # Softens low-frequency resonances
+            "stability": 0.60,
+            "similarity_boost": 0.75,
+            "style": 0.00,
+            "use_speaker_boost": False
         }
     }
     response = requests.post(url, json=data, headers=headers)
@@ -277,4 +305,3 @@ if user_text:
                 play_invisible_audio(audio_bytes)
 
     st.session_state.messages.append({"role": "assistant", "content": tairn_reply})
-    
