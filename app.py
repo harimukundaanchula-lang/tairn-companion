@@ -14,33 +14,41 @@ st.set_page_config(
 # Raw image URL for map uploaded to your GitHub repository
 MAP_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/map.jpg"
 
-# App theme CSS & Slow Map Movement Animation
+# App theme CSS & Deep 400% Zoom Slow Map Movement Animation
 st.markdown(f"""
     <style>
-    /* Slow pan & zoom animation for the map background */
+    /* Slow cinematic pan & zoom animation (400% Zoom) */
     @keyframes panMap {{
         0% {{
-            background-position: 10% 20%;
-            background-size: 135%;
+            background-position: 20% 30%;
+            background-size: 400%;
+        }}
+        25% {{
+            background-position: 80% 20%;
+            background-size: 420%;
         }}
         50% {{
-            background-position: 90% 80%;
-            background-size: 145%;
+            background-position: 85% 75%;
+            background-size: 400%;
+        }}
+        75% {{
+            background-position: 25% 70%;
+            background-size: 430%;
         }}
         100% {{
-            background-position: 10% 20%;
-            background-size: 135%;
+            background-position: 20% 30%;
+            background-size: 400%;
         }}
     }}
 
     .stApp {{
         background-color: #0b0c10;
         background-image: 
-            radial-gradient(circle at center, rgba(11, 12, 16, 0.65) 0%, rgba(5, 5, 8, 0.90) 100%),
+            radial-gradient(circle at center, rgba(11, 12, 16, 0.60) 0%, rgba(5, 5, 8, 0.90) 100%),
             url('{MAP_IMAGE_URL}');
         background-repeat: no-repeat;
         background-attachment: fixed;
-        animation: panMap 45s infinite ease-in-out;
+        animation: panMap 60s infinite ease-in-out;
         color: #e0e0e0;
     }}
     
