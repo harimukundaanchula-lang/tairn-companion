@@ -11,26 +11,44 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# App theme CSS & Keyframe Animations with Map of The Continent
-st.markdown("""
+# Raw image URL for map uploaded to your GitHub repository
+MAP_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/map.jpg"
+
+# App theme CSS & Slow Map Movement Animation
+st.markdown(f"""
     <style>
-    /* Dark Empyrean Continent Map Background */
-    .stApp {
+    /* Slow pan & zoom animation for the map background */
+    @keyframes panMap {{
+        0% {{
+            background-position: 10% 20%;
+            background-size: 135%;
+        }}
+        50% {{
+            background-position: 90% 80%;
+            background-size: 145%;
+        }}
+        100% {{
+            background-position: 10% 20%;
+            background-size: 135%;
+        }}
+    }}
+
+    .stApp {{
         background-color: #0b0c10;
         background-image: 
-            radial-gradient(circle at center, rgba(11, 12, 16, 0.70) 0%, rgba(5, 5, 8, 0.92) 100%),
-            url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
+            radial-gradient(circle at center, rgba(11, 12, 16, 0.65) 0%, rgba(5, 5, 8, 0.90) 100%),
+            url('{MAP_IMAGE_URL}');
+        background-repeat: no-repeat;
         background-attachment: fixed;
+        animation: panMap 45s infinite ease-in-out;
         color: #e0e0e0;
-    }
+    }}
     
     /* Hide Streamlit Chrome Header & Footer */
-    header, footer, #MainMenu { visibility: hidden !important; }
+    header, footer, #MainMenu {{ visibility: hidden !important; }}
     
     /* Overlapping Header Container */
-    .tairn-header-container {
+    .tairn-header-container {{
         position: relative;
         text-align: center;
         padding: 10px 0 30px 0;
@@ -40,25 +58,25 @@ st.markdown("""
         justify-content: center;
         overflow: visible;
         min-height: 280px;
-    }
+    }}
 
     /* ANIMATION 1: Dragon Breathing & Glowing */
-    @keyframes dragonBreathing {
-        0% {
+    @keyframes dragonBreathing {{
+        0% {{
             transform: translateY(0px) scale(1);
             filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.75)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
-        }
-        50% {
+        }}
+        50% {{
             transform: translateY(-8px) scale(1.02);
             filter: drop-shadow(0px 0px 22px rgba(255, 140, 0, 0.95)) drop-shadow(0px 0px 40px rgba(212, 175, 55, 0.6));
-        }
-        100% {
+        }}
+        100% {{
             transform: translateY(0px) scale(1);
             filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.75)) drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.35));
-        }
-    }
+        }}
+    }}
 
-    .tairn-dragon-glow {
+    .tairn-dragon-glow {{
         position: absolute;
         top: -20px;
         width: 360px;
@@ -67,75 +85,75 @@ st.markdown("""
         opacity: 0.9;
         pointer-events: none;
         animation: dragonBreathing 5s infinite ease-in-out;
-    }
+    }}
 
     /* Header Text Layered Above Image */
-    .tairn-text-wrapper {
+    .tairn-text-wrapper {{
         position: relative;
         z-index: 2;
         margin-top: 130px;
         text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.95), 0px 0px 20px rgba(0, 0, 0, 0.9);
-    }
+    }}
 
-    .tairn-title {
+    .tairn-title {{
         color: #ffd700;
         font-family: 'Cinzel', serif, sans-serif;
         font-size: 32px;
         font-weight: 800;
         letter-spacing: 4px;
         margin: 0;
-    }
+    }}
 
-    .tairn-sub {
+    .tairn-sub {{
         color: #cccccc;
         font-size: 12px;
         font-weight: 600;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin-top: 6px;
-    }
+    }}
 
-    /* ANIMATION 2: Chat Bubble Telepathic Fade-In with Semi-Transparent Parchment/Slate Overlay */
-    @keyframes telepathicFadeIn {
-        from {
+    /* ANIMATION 2: Chat Bubble Telepathic Fade-In with Dark Translucent Slate Glass */
+    @keyframes telepathicFadeIn {{
+        from {{
             opacity: 0;
             transform: translateY(12px) scale(0.98);
-        }
-        to {
+        }}
+        to {{
             opacity: 1;
             transform: translateY(0) scale(1);
-        }
-    }
+        }}
+    }}
 
-    div[data-testid="stChatMessage"] {
-        background: rgba(16, 17, 22, 0.88);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+    div[data-testid="stChatMessage"] {{
+        background: rgba(14, 15, 20, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-radius: 15px;
         padding: 12px 18px;
         margin-bottom: 10px;
         border: 1px solid rgba(212, 175, 55, 0.25);
         animation: telepathicFadeIn 0.4s ease-out forwards;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
-    }
+    }}
 
     /* Input Box styling over map */
-    div[data-testid="stChatInput"] {
-        background: rgba(12, 13, 17, 0.9) !important;
-        backdrop-filter: blur(12px) !important;
+    div[data-testid="stChatInput"] {{
+        background: rgba(10, 11, 15, 0.92) !important;
+        backdrop-filter: blur(14px) !important;
         border-radius: 20px !important;
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    }
+    }}
 
     /* Hide default audio playback elements */
-    div[data-testid="stAudio"], audio {
+    div[data-testid="stAudio"], audio {{
         display: none !important;
         height: 0px !important;
         opacity: 0 !important;
-    }
+    }}
 
     /* ANIMATION 3: Record Button Glow & Pulse */
-    div[data-testid="stChatInput"] button {
+    div[data-testid="stChatInput"] button {{
         width: 48px !important;
         height: 48px !important;
         min-width: 48px !important;
@@ -146,48 +164,48 @@ st.markdown("""
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
         background: rgba(28, 29, 34, 0.8) !important;
-    }
+    }}
 
-    div[data-testid="stChatInput"] button svg {
+    div[data-testid="stChatInput"] button svg {{
         width: 24px !important;
         height: 24px !important;
         fill: #d4af37 !important;
         transition: transform 0.3s ease !important;
-    }
+    }}
 
-    div[data-testid="stChatInput"] button:hover {
+    div[data-testid="stChatInput"] button:hover {{
         transform: scale(1.12);
         border-color: #ffd700 !important;
         box-shadow: 0 0 18px rgba(212, 175, 55, 0.7), inset 0 0 10px rgba(212, 175, 55, 0.4) !important;
-    }
+    }}
 
-    @keyframes dragonPulse {
-        0% {
+    @keyframes dragonPulse {{
+        0% {{
             box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 10px rgba(255, 87, 34, 0.6);
             transform: scale(1.05);
-        }
-        50% {
+        }}
+        50% {{
             box-shadow: 0 0 0 14px rgba(212, 175, 55, 0), 0 0 25px rgba(255, 87, 34, 0.9);
             transform: scale(1.15);
-        }
-        100% {
+        }}
+        100% {{
             box-shadow: 0 0 0 0 rgba(212, 175, 55, 0), 0 0 10px rgba(255, 87, 34, 0.6);
             transform: scale(1.05);
-        }
-    }
+        }}
+    }}
 
     div[data-testid="stChatInput"] button:active,
     div[data-testid="stChatInput"] button[aria-pressed="true"],
-    div[data-testid="stChatInput"] button[data-is-recording="true"] {
+    div[data-testid="stChatInput"] button[data-is-recording="true"] {{
         background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(20,21,25,0.9) 100%) !important;
         border-color: #ff5722 !important;
         animation: dragonPulse 1.2s infinite ease-in-out !important;
-    }
+    }}
 
     div[data-testid="stChatInput"] button:active svg,
-    div[data-testid="stChatInput"] button[aria-pressed="true"] svg {
+    div[data-testid="stChatInput"] button[aria-pressed="true"] svg {{
         fill: #ff5722 !important;
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
