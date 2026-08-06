@@ -12,9 +12,10 @@ st.set_page_config(
 )
 
 # Raw image URL for map uploaded to your GitHub repository
-MAP_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/map.jpg"
+# Replace with the actual file name you push to GitHub, e.g., 1000053491.jpg if you didn't rename it
+MAP_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/1000053491.jpg"
 
-# App theme CSS & Deep 400% Zoom Slow Map Movement Animation
+# App theme CSS & Deep 400% Zoom Extremely Slow Map Movement Animation
 st.markdown(f"""
     <style>
     /* Slow cinematic pan & zoom animation (400% Zoom) */
@@ -48,7 +49,8 @@ st.markdown(f"""
             url('{MAP_IMAGE_URL}');
         background-repeat: no-repeat;
         background-attachment: fixed;
-        animation: panMap 60s infinite ease-in-out;
+        /* Increased duration from 60s to 240s for a very slow, subtle pan */
+        animation: panMap 240s infinite ease-in-out;
         color: #e0e0e0;
     }}
     
