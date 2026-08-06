@@ -11,45 +11,43 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Raw image URL for map uploaded to your GitHub repository
-# Replace with the actual file name you push to GitHub, e.g., 1000053491.jpg if you didn't rename it
-MAP_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/1000053491.jpg"
+# Reliable jsDelivr CDN link for your GitHub repository image
+MAP_IMAGE_URL = "https://cdn.jsdelivr.net/gh/harimukundaanchula-lang/tairn-companion@main/1000053491.jpg"
 
-# App theme CSS & Deep 400% Zoom Extremely Slow Map Movement Animation
+# App theme CSS & Ultra Slow 400% Zoom Map Animation
 st.markdown(f"""
     <style>
-    /* Slow cinematic pan & zoom animation (400% Zoom) */
+    /* Slow cinematic pan & zoom animation */
     @keyframes panMap {{
         0% {{
             background-position: 20% 30%;
-            background-size: 400%;
+            background-size: 350%;
         }}
         25% {{
             background-position: 80% 20%;
-            background-size: 420%;
+            background-size: 380%;
         }}
         50% {{
             background-position: 85% 75%;
-            background-size: 400%;
+            background-size: 350%;
         }}
         75% {{
             background-position: 25% 70%;
-            background-size: 430%;
+            background-size: 380%;
         }}
         100% {{
             background-position: 20% 30%;
-            background-size: 400%;
+            background-size: 350%;
         }}
     }}
 
     .stApp {{
         background-color: #0b0c10;
         background-image: 
-            radial-gradient(circle at center, rgba(11, 12, 16, 0.60) 0%, rgba(5, 5, 8, 0.90) 100%),
+            radial-gradient(circle at center, rgba(11, 12, 16, 0.25) 0%, rgba(5, 5, 8, 0.65) 100%),
             url('{MAP_IMAGE_URL}');
         background-repeat: no-repeat;
         background-attachment: fixed;
-        /* Increased duration from 60s to 240s for a very slow, subtle pan */
         animation: panMap 240s infinite ease-in-out;
         color: #e0e0e0;
     }}
@@ -220,7 +218,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Raw image URL from GitHub
-RAW_IMAGE_URL = "https://raw.githubusercontent.com/harimukundaanchula-lang/tairn-companion/refs/heads/main/dragon.png"
+RAW_IMAGE_URL = "https://cdn.jsdelivr.net/gh/harimukundaanchula-lang/tairn-companion@main/dragon.png"
 
 # Header component
 st.markdown(f"""
